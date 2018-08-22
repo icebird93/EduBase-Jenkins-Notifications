@@ -22,20 +22,27 @@ def call(String buildStatus = 'STARTED') {
   } else if (buildStatus == 'SUCCESSFUL') {
     color = 'GREEN'
     colorCode = '#00FF00'
+  } else if (buildStatus == 'UNSTABLE') {
+    color = '#FFFE89'
+    colorCode = 'YELLOW'
   }
 
   // Send notifications
-  slackSend (
-    channel: "#${env.NOTIFICATION_SLACK_CHANNEL}",
-    color: colorCode,
-    message: summary
-  )
+  if (! env.NOTIFICATION_SLACK_CHANNEL?.trim()) {
+    slackSend (
+      channel: "#${env.NOTIFICATION_SLACK_CHANNEL}",
+      color: colorCode,
+      message: summary
+    )
+  }
 
-  // Send email
-  emailext (
-    to: "${env.NOTIFICATION_EMAIL_TO}",
-    subject: subject,
-    body: details,
-    recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-  )
+  // Send email (if variable is set)
+  if (! env.NOTIFICATION_EMAIL_TO?.trim()) {
+    emailext (
+      to: "${env.NOTIFICATION_EMAIL_TO}",
+      subject: subject,
+      body: details,
+      recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+    )
+  }
 }
