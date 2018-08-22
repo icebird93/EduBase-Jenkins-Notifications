@@ -28,7 +28,7 @@ def call(String buildStatus = 'STARTED') {
   }
 
   // Send notifications
-  if (! env.NOTIFICATION_SLACK_CHANNEL?.trim()) {
+  if (env.NOTIFICATION_SLACK_CHANNEL?.trim()) {
     slackSend (
       channel: "#${env.NOTIFICATION_SLACK_CHANNEL}",
       color: colorCode,
@@ -37,7 +37,7 @@ def call(String buildStatus = 'STARTED') {
   }
 
   // Send email (if variable is set)
-  if (! env.NOTIFICATION_EMAIL_TO?.trim()) {
+  if (env.NOTIFICATION_EMAIL_TO?.trim()) {
     emailext (
       to: "${env.NOTIFICATION_EMAIL_TO}",
       subject: subject,
